@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResumeSite - 简历转个人网站</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <!-- 配置Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#000000',
+            secondary: '#333333',
+            accent: '#ff4d4d',
+            background: '#f8f8f8',
+            card: '#ffffff',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Montserrat', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .transition-all-300 {
+        transition: all 0.3s ease;
+      }
+      .transition-all-500 {
+        transition: all 0.5s ease;
+      }
+      .hover-scale {
+        transition: transform 0.3s ease;
+      }
+      .hover-scale:hover {
+        transform: scale(1.03);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-hover::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%, -50%);
+        transform-origin: 50% 50%;
+      }
+      .btn-hover:hover::after {
+        animation: ripple 0.6s ease-out;
+      }
+      @keyframes ripple {
+        0% {
+          transform: scale(0, 0);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(100, 100);
+          opacity: 0;
+        }
+      }
+      .form-input-focus {
+        transition: all 0.3s ease;
+      }
+      .form-input-focus:focus {
+        border-color: #000000;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+      }
+      .drag-drop-hover {
+        transition: all 0.3s ease;
+      }
+      .drag-drop-hover:hover,
+      .drag-drop-hover.drag-over {
+        border-color: #000000;
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+      }
+      .scroll-reveal.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .typewriter {
+        overflow: hidden;
+        border-right: 0.15em solid #000000;
+        white-space: nowrap;
+        margin: 0 auto;
+        animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+      }
+      @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+      }
+      @keyframes blink-caret {
+        from, to { border-color: transparent }
+        50% { border-color: #000000; }
+      }
+      .float-animation {
+        animation: float 6s ease-in-out infinite;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .underline-animation {
+        position: relative;
+      }
+      .underline-animation::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #ff4d4d;
+        transition: width 0.3s ease;
+      }
+      .underline-animation:hover::after {
+        width: 100%;
+      }
+      .border-expand {
+        position: relative;
+      }
+      .border-expand::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid transparent;
+        border-radius: inherit;
+        transition: all 0.3s ease;
+      }
+      .border-expand:hover::before {
+        border-color: #000000;
+      }
+      .step-line {
+        position: relative;
+      }
+      .step-line::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: 100%;
+        height: 2px;
+        background-color: #e0e0e0;
+        transform: translateY(-50%);
+      }
+      .step-line:last-child::before {
+        display: none;
+      }
+    }
+  </style>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-background font-sans">
+  <!-- 导航栏 -->
+  <nav class="fixed w-full top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-gray-200">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-2 hover-scale">
+        <div class="w-8 h-8 border-2 border-primary rounded-full flex items-center justify-center">
+          <i class="fa fa-file-text-o text-primary"></i>
+        </div>
+        <h1 class="text-xl font-bold font-display">ResumeSite</h1>
+      </div>
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="#features" class="hover:text-primary transition-all-300 underline-animation">功能</a>
+        <a href="#templates" class="hover:text-primary transition-all-300 underline-animation">模板</a>
+        <a href="#process" class="hover:text-primary transition-all-300 underline-animation">流程</a>
+        <a href="#demo" class="hover:text-primary transition-all-300 underline-animation">演示</a>
+        <button id="login-btn" class="border-2 border-primary hover:bg-primary hover:text-white px-6 py-2 rounded-full transition-all-300 btn-hover">登录</button>
+      </div>
+      <button class="md:hidden text-xl">
+        <i class="fa fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 英雄区域 -->
+  <section class="py-32 md:py-40">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center gap-12">
+        <!-- 左侧文字 -->
+        <div class="md:w-1/2">
+          <div class="mb-6">
+            <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">AI 驱动</span>
+            <h1 class="text-4xl md:text-6xl font-bold font-display mb-6 leading-tight">
+              将你的 <span class="relative inline-block">
+                <span class="relative z-10">简历</span>
+                <span class="absolute bottom-1 left-0 w-full h-3 bg-accent/20 -z-10"></span>
+              </span> 转化为
+              <div class="mt-4">
+                <span class="text-4xl md:text-6xl font-bold font-display">
+                  <span id="dynamic-text" class="typewriter">个人网站</span>
+                </span>
+              </div>
+            </h1>
+            <p class="text-lg text-gray-600 mb-8 max-w-lg">
+              只需上传你的简历，我们的 AI 会自动分析内容，生成一个美观、专业的个人网站，展示你的技能和经历。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button id="get-started-btn" class="bg-primary text-white px-8 py-4 rounded-full font-semibold text-lg transition-all-300 btn-hover border-2 border-primary hover:bg-transparent hover:text-primary flex items-center justify-center">
+                开始使用
+                <i class="fa fa-arrow-right ml-3 transition-all-300 group-hover:translate-x-2"></i>
+              </button>
+              <button class="border-2 border-primary hover:bg-primary hover:text-white px-8 py-4 rounded-full font-semibold text-lg transition-all-300 btn-hover">
+                查看演示
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center space-x-6">
+            <div class="flex -space-x-2">
+              <div class="w-10 h-10 rounded-full border-2 border-background bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fa fa-user"></i>
+              </div>
+              <div class="w-10 h-10 rounded-full border-2 border-background bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fa fa-user"></i>
+              </div>
+              <div class="w-10 h-10 rounded-full border-2 border-background bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fa fa-user"></i>
+              </div>
+              <div class="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center text-xs font-bold">+2k</div>
+            </div>
+            <div>
+              <div class="flex items-center">
+                <i class="fa fa-star text-yellow-400"></i>
+                <i class="fa fa-star text-yellow-400"></i>
+                <i class="fa fa-star text-yellow-400"></i>
+                <i class="fa fa-star text-yellow-400"></i>
+                <i class="fa fa-star text-yellow-400"></i>
+              </div>
+              <p class="text-sm text-gray-600">来自 2000+ 用户的好评</p>
+            </div>
+          </div>
+        </div>
+        <!-- 右侧 Mockup -->
+        <div class="md:w-1/2 float-animation">
+          <div class="relative">
+            <!-- PDF 卡片 -->
+            <div class="absolute -top-10 -left-10 w-48 h-64 bg-white border-2 border-gray-300 rounded-lg shadow-lg transform rotate-[-10deg] transition-all-500 hover:rotate-[-5deg]">
+              <div class="bg-red-100 h-8 flex items-center px-3 border-b border-gray-200">
+                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold mb-2">简历.pdf</h3>
+                <p class="text-xs text-gray-500">张三 - 前端开发工程师</p>
+                <div class="mt-4 space-y-2">
+                  <div class="w-full h-2 bg-gray-200 rounded"></div>
+                  <div class="w-full h-2 bg-gray-200 rounded"></div>
+                  <div class="w-full h-2 bg-gray-200 rounded"></div>
+                  <div class="w-3/4 h-2 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            </div>
+            <!-- 转化箭头 -->
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white animate-pulse">
+                <i class="fa fa-arrow-right text-xl"></i>
+              </div>
+            </div>
+            <!-- 网站预览 -->
+            <div class="relative z-10 w-full max-w-md mx-auto bg-white border-2 border-primary rounded-lg shadow-xl overflow-hidden">
+              <div class="bg-gray-100 h-8 flex items-center px-3 border-b border-gray-200">
+                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                <div class="flex-1 text-center text-xs text-gray-500">个人网站预览</div>
+              </div>
+              <div class="p-4">
+                <header class="text-center mb-4">
+                  <h2 class="text-xl font-bold">张三</h2>
+                  <p class="text-gray-600">前端开发工程师</p>
+                </header>
+                <div class="space-y-3">
+                  <div class="border-l-2 border-primary pl-3">
+                    <h3 class="font-semibold">工作经历</h3>
+                    <p class="text-sm text-gray-600">ABC科技有限公司 | 2020年至今</p>
+                  </div>
+                  <div class="border-l-2 border-primary pl-3">
+                    <h3 class="font-semibold">教育背景</h3>
+                    <p class="text-sm text-gray-600">北京大学 | 2014年-2018年</p>
+                  </div>
+                  <div class="border-l-2 border-primary pl-3">
+                    <h3 class="font-semibold">技能</h3>
+                    <p class="text-sm text-gray-600">HTML5, CSS3, JavaScript, React</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能介绍 -->
+  <section id="features" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16 scroll-reveal">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">核心功能</span>
+        <h2 class="text-3xl md:text-4xl font-bold font-display mb-4">为什么选择 ResumeSite</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">我们提供一站式解决方案，将你的简历转化为专业的个人网站，展示你的技能和经历</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 功能1 -->
+        <div class="bg-background p-8 rounded-2xl border-2 border-gray-200 card-hover scroll-reveal">
+          <div class="w-14 h-14 border-2 border-primary rounded-full flex items-center justify-center text-primary text-2xl mb-6">
+            <i class="fa fa-upload"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-display">智能解析</h3>
+          <p class="text-gray-600">上传你的PDF或Word简历，我们的AI会自动分析内容，提取关键信息并组织成结构化数据。</p>
+        </div>
+        <!-- 功能2 -->
+        <div class="bg-background p-8 rounded-2xl border-2 border-gray-200 card-hover scroll-reveal">
+          <div class="w-14 h-14 border-2 border-primary rounded-full flex items-center justify-center text-primary text-2xl mb-6">
+            <i class="fa fa-paint-brush"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-display">专业模板</h3>
+          <p class="text-gray-600">选择多种精心设计的模板，根据你的行业和个人风格，打造独特的个人网站。</p>
+        </div>
+        <!-- 功能3 -->
+        <div class="bg-background p-8 rounded-2xl border-2 border-gray-200 card-hover scroll-reveal">
+          <div class="w-14 h-14 border-2 border-primary rounded-full flex items-center justify-center text-primary text-2xl mb-6">
+            <i class="fa fa-mobile"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-display">响应式设计</h3>
+          <p class="text-gray-600">自动适配手机、平板等不同设备，确保你的网站在任何屏幕上都完美展示。</p>
+        </div>
+        <!-- 功能4 -->
+        <div class="bg-background p-8 rounded-2xl border-2 border-gray-200 card-hover scroll-reveal">
+          <div class="w-14 h-14 border-2 border-primary rounded-full flex items-center justify-center text-primary text-2xl mb-6">
+            <i class="fa fa-image"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-display">作品集展示</h3>
+          <p class="text-gray-600">展示你的项目作品，通过图片、描述和链接，全方位展现你的专业能力。</p>
+        </div>
+        <!-- 功能5 -->
+        <div class="bg-background p-8 rounded-2xl border-2 border-gray-200 card-hover scroll-reveal">
+          <div class="w-14 h-14 border-2 border-primary rounded-full flex items-center justify-center text-primary text-2xl mb-6">
+            <i class="fa fa-envelope"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-display">联系表单</h3>
+          <p class="text-gray-600">集成联系表单和社交链接，方便潜在雇主或客户与你取得联系。</p>
+        </div>
+        <!-- 功能6 -->
+        <div class="bg-background p-8 rounded-2xl border-2 border-gray-200 card-hover scroll-reveal">
+          <div class="w-14 h-14 border-2 border-primary rounded-full flex items-center justify-center text-primary text-2xl mb-6">
+            <i class="fa fa-globe"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-display">免费托管</h3>
+          <p class="text-gray-600">我们提供免费的网站托管服务，让你无需担心服务器和域名的问题。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 上传区域 -->
+  <section class="py-20 bg-background">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-16 scroll-reveal">
+          <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">开始使用</span>
+          <h2 class="text-3xl md:text-4xl font-bold font-display mb-4">上传你的简历</h2>
+          <p class="text-lg text-gray-600 max-w-2xl mx-auto">支持PDF、Word文件或直接粘贴文本内容，我们会自动解析并生成网站</p>
+        </div>
+        
+        <!-- 步骤指示器 -->
+        <div class="flex justify-between mb-12">
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold">1</div>
+            <span class="mt-2 text-sm font-medium">上传简历</span>
+          </div>
+          <div class="flex-1 flex items-center">
+            <div class="h-1 bg-gray-200 flex-1">
+              <div class="h-1 bg-primary w-0" id="progress-1"></div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-white font-bold">2</div>
+            <span class="mt-2 text-sm font-medium">查看解析</span>
+          </div>
+          <div class="flex-1 flex items-center">
+            <div class="h-1 bg-gray-200 flex-1">
+              <div class="h-1 bg-primary w-0" id="progress-2"></div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-white font-bold">3</div>
+            <span class="mt-2 text-sm font-medium">选择模板</span>
+          </div>
+          <div class="flex-1 flex items-center">
+            <div class="h-1 bg-gray-200 flex-1">
+              <div class="h-1 bg-primary w-0" id="progress-3"></div>
+            </div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-white font-bold">4</div>
+            <span class="mt-2 text-sm font-medium">预览部署</span>
+          </div>
+        </div>
+        
+        <!-- 步骤内容 -->
+        <div class="step-content" id="step-1">
+          <!-- 上传方式选择 -->
+          <div class="flex flex-wrap justify-center gap-4 mb-8">
+            <button class="upload-btn active bg-background border-2 border-primary text-primary px-6 py-3 rounded-full font-semibold transition-all-300" data-method="file">
+              <i class="fa fa-upload mr-2"></i> 上传文件
+            </button>
+            <button class="upload-btn bg-white border-2 border-gray-200 hover:border-primary px-6 py-3 rounded-full font-semibold transition-all-300" data-method="text">
+              <i class="fa fa-paste mr-2"></i> 粘贴文本
+            </button>
+          </div>
+          <!-- 文件上传区域 -->
+          <div id="file-upload" class="upload-method active">
+            <div id="upload-section" class="border-2 border-dashed border-gray-300 rounded-2xl p-10 text-center drag-drop-hover">
+              <div class="w-20 h-20 border-2 border-primary rounded-full flex items-center justify-center text-primary text-4xl mb-6 mx-auto">
+                <i class="fa fa-cloud-upload"></i>
+              </div>
+              <h3 class="text-xl font-semibold mb-4 font-display">拖拽文件到此处或点击上传</h3>
+              <p class="text-gray-600 mb-6">支持 PDF 和 Word 文件格式</p>
+              <input type="file" class="hidden" id="file-input" accept=".pdf,.doc,.docx">
+              <button class="border-2 border-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-semibold transition-all-300 btn-hover" onclick="document.getElementById('file-input').click()">
+                选择文件
+              </button>
+              <p class="text-sm text-gray-500 mt-6">我们尊重你的隐私，不会存储或分享你的个人信息</p>
+            </div>
+          </div>
+          <!-- 文本粘贴区域 -->
+          <div id="text-upload" class="upload-method hidden">
+            <div class="border-2 border-gray-200 rounded-2xl p-6">
+              <h3 class="text-xl font-semibold mb-4 font-display">粘贴简历文本</h3>
+              <textarea id="resume-text" class="w-full h-64 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none" placeholder="在此粘贴你的简历文本..."></textarea>
+              <button id="text-upload-btn" class="mt-6 border-2 border-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-semibold transition-all-300 btn-hover w-full">
+                上传文本
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 解析结果步骤 -->
+        <div class="step-content hidden" id="step-2">
+          <div class="bg-white rounded-2xl border-2 border-gray-200 p-8">
+            <h3 class="text-2xl font-bold font-display mb-6">解析结果</h3>
+            <div class="space-y-6">
+              <div>
+                <h4 class="font-semibold text-lg mb-2">基本信息</h4>
+                <div class="bg-background p-4 rounded-lg border border-gray-200">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-sm text-gray-500 mb-1">姓名</label>
+                      <input type="text" class="w-full p-2 border border-gray-300 rounded" value="张三">
+                    </div>
+                    <div>
+                      <label class="block text-sm text-gray-500 mb-1">职业</label>
+                      <input type="text" class="w-full p-2 border border-gray-300 rounded" value="前端开发工程师">
+                    </div>
+                    <div>
+                      <label class="block text-sm text-gray-500 mb-1">邮箱</label>
+                      <input type="email" class="w-full p-2 border border-gray-300 rounded" value="zhangsan@example.com">
+                    </div>
+                    <div>
+                      <label class="block text-sm text-gray-500 mb-1">电话</label>
+                      <input type="text" class="w-full p-2 border border-gray-300 rounded" value="13800138000">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 class="font-semibold text-lg mb-2">工作经历</h4>
+                <div class="bg-background p-4 rounded-lg border border-gray-200">
+                  <div class="space-y-4">
+                    <div class="p-3 border border-gray-200 rounded">
+                      <div class="flex justify-between">
+                        <input type="text" class="w-1/2 p-2 border border-gray-300 rounded" value="前端开发工程师">
+                        <input type="text" class="w-1/2 p-2 border border-gray-300 rounded ml-2" value="ABC科技有限公司">
+                      </div>
+                      <div class="mt-2">
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded" value="2020年至今">
+                      </div>
+                      <div class="mt-2">
+                        <textarea class="w-full p-2 border border-gray-300 rounded" rows="3">负责公司官网和内部系统的前端开发，使用React和TypeScript构建单页应用，优化网站性能，提升用户体验。</textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 class="font-semibold text-lg mb-2">教育背景</h4>
+                <div class="bg-background p-4 rounded-lg border border-gray-200">
+                  <div class="space-y-4">
+                    <div class="p-3 border border-gray-200 rounded">
+                      <div class="flex justify-between">
+                        <input type="text" class="w-1/2 p-2 border border-gray-300 rounded" value="计算机科学与技术">
+                        <input type="text" class="w-1/2 p-2 border border-gray-300 rounded ml-2" value="北京大学">
+                      </div>
+                      <div class="mt-2">
+                        <input type="text" class="w-full p-2 border border-gray-300 rounded" value="2014年-2018年">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 class="font-semibold text-lg mb-2">技能</h4>
+                <div class="bg-background p-4 rounded-lg border border-gray-200">
+                  <input type="text" class="w-full p-2 border border-gray-300 rounded" value="HTML5, CSS3, JavaScript, React, Vue, TypeScript">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between">
+            <button id="back-to-upload" class="border-2 border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-full font-semibold transition-all-300">
+              返回
+            </button>
+            <button id="parse-next" class="border-2 border-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-semibold transition-all-300 btn-hover">
+              下一步
+            </button>
+          </div>
+        </div>
+        
+        <!-- 选择模板步骤 -->
+        <div class="step-content hidden" id="step-3">
+          <h3 class="text-2xl font-bold font-display mb-8 text-center">选择模板</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-48 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=minimal%20modern%20resume%20website%20template%20with%20clean%20layout%20and%20blue%20accent%20colors&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h4 class="text-xl font-bold font-display text-white">简约现代</h4>
+                </div>
+              </div>
+              <div class="p-4">
+                <p class="text-gray-600 text-sm mb-4">干净整洁的布局，突出个人信息和技能</p>
+                <button class="template-select-btn w-full border-2 border-primary hover:bg-primary hover:text-white px-4 py-2 rounded-full font-semibold transition-all-300" data-template="modern">
+                  选择
+                </button>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-48 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=creative%20personal%20resume%20website%20template%20with%20unique%20design%20and%20artistic%20elements&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h4 class="text-xl font-bold font-display text-white">创意个性</h4>
+                </div>
+              </div>
+              <div class="p-4">
+                <p class="text-gray-600 text-sm mb-4">富有创意的设计，展现个人特色和风格</p>
+                <button class="template-select-btn w-full border-2 border-primary hover:bg-primary hover:text-white px-4 py-2 rounded-full font-semibold transition-all-300" data-template="creative">
+                  选择
+                </button>
+              </div>
+            </div>
+            <div class="bg-white rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-48 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20resume%20website%20template%20with%20formal%20layout%20and%20business%20style&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h4 class="text-xl font-bold font-display text-white">专业正式</h4>
+                </div>
+              </div>
+              <div class="p-4">
+                <p class="text-gray-600 text-sm mb-4">专业严谨的布局，适合商务和正式场合</p>
+                <button class="template-select-btn w-full border-2 border-primary hover:bg-primary hover:text-white px-4 py-2 rounded-full font-semibold transition-all-300" data-template="professional">
+                  选择
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between">
+            <button id="back-to-parse" class="border-2 border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-full font-semibold transition-all-300">
+              返回
+            </button>
+            <button id="template-next" class="border-2 border-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-semibold transition-all-300 btn-hover">
+              预览网站
+            </button>
+          </div>
+        </div>
+        
+        <!-- 预览部署步骤 -->
+        <div class="step-content hidden" id="step-4">
+          <h3 class="text-2xl font-bold font-display mb-8 text-center">网站预览</h3>
+          <div class="bg-white rounded-2xl border-2 border-gray-200 p-6">
+            <div class="bg-background border-2 border-primary rounded-lg overflow-hidden">
+              <header class="bg-primary text-white p-6">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                  <div>
+                    <h4 class="text-2xl font-bold">张三</h4>
+                    <p class="text-white/80">前端开发工程师</p>
+                  </div>
+                  <div class="mt-4 md:mt-0">
+                    <div class="flex space-x-3">
+                      <a href="#" class="bg-white/20 hover:bg-white/30 w-10 h-10 rounded-full flex items-center justify-center transition-all-300">
+                        <i class="fa fa-linkedin"></i>
+                      </a>
+                      <a href="#" class="bg-white/20 hover:bg-white/30 w-10 h-10 rounded-full flex items-center justify-center transition-all-300">
+                        <i class="fa fa-github"></i>
+                      </a>
+                      <a href="#" class="bg-white/20 hover:bg-white/30 w-10 h-10 rounded-full flex items-center justify-center transition-all-300">
+                        <i class="fa fa-twitter"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </header>
+              <div class="p-6 space-y-6">
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-user mr-2 text-primary"></i>
+                    关于我
+                  </h5>
+                  <p class="text-gray-600">我是一名有5年经验的前端开发工程师，专注于构建响应式、用户友好的网站和应用程序。我熟悉现代前端技术栈，包括HTML5、CSS3、JavaScript、React和Vue等。我热爱解决问题，并且不断学习新技术来提升自己的能力。</p>
+                </section>
+                
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-briefcase mr-2 text-primary"></i>
+                    工作经历
+                  </h5>
+                  <div class="mt-4 space-y-4">
+                    <div class="pl-4 border-l-2 border-primary">
+                      <div class="font-medium">前端开发工程师</div>
+                      <div class="text-gray-500">ABC科技有限公司 | 2020年至今</div>
+                      <ul class="list-disc list-inside mt-2 text-gray-600">
+                        <li>负责公司官网和内部系统的前端开发</li>
+                        <li>使用React和TypeScript构建单页应用</li>
+                        <li>优化网站性能，提升用户体验</li>
+                        <li>与后端团队协作，实现完整的功能模块</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+                
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-star mr-2 text-primary"></i>
+                    技能
+                  </h5>
+                  <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="flex justify-between mb-1">
+                        <span>HTML5/CSS3</span>
+                        <span>95%</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 95%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between mb-1">
+                        <span>JavaScript</span>
+                        <span>90%</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 flex justify-between">
+            <button id="back-to-template" class="border-2 border-gray-300 hover:bg-gray-100 px-8 py-3 rounded-full font-semibold transition-all-300">
+              返回
+            </button>
+            <button id="deploy-btn" class="bg-primary text-white hover:bg-primary/90 px-8 py-3 rounded-full font-semibold transition-all-300 btn-hover">
+              部署网站
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 模板展示 -->
+  <section id="templates" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16 scroll-reveal">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">模板选择</span>
+        <h2 class="text-3xl md:text-4xl font-bold font-display mb-4">专业模板</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">选择适合你行业和个人风格的模板，打造独特的个人网站</p>
+      </div>
+      <!-- 横向模板展示 -->
+      <div class="relative">
+        <div class="flex overflow-x-auto space-x-6 pb-8 snap-x snap-mandatory">
+          <!-- 模板1 -->
+          <div class="min-w-[300px] md:min-w-[400px] snap-center">
+            <div class="bg-background rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-64 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=minimal%20modern%20resume%20website%20template%20with%20clean%20layout%20and%20blue%20accent%20colors&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h3 class="text-2xl font-bold font-display text-white">简约现代</h3>
+                </div>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-600 mb-4">干净整洁的布局，突出个人信息和技能</p>
+                <button class="template-btn border-2 border-primary hover:bg-primary hover:text-white px-6 py-2 rounded-full font-semibold transition-all-300 btn-hover w-full" data-template="modern">
+                  选择模板
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- 模板2 -->
+          <div class="min-w-[300px] md:min-w-[400px] snap-center">
+            <div class="bg-background rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-64 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=creative%20personal%20resume%20website%20template%20with%20unique%20design%20and%20artistic%20elements&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h3 class="text-2xl font-bold font-display text-white">创意个性</h3>
+                </div>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-600 mb-4">富有创意的设计，展现个人特色和风格</p>
+                <button class="template-btn border-2 border-primary hover:bg-primary hover:text-white px-6 py-2 rounded-full font-semibold transition-all-300 btn-hover w-full" data-template="creative">
+                  选择模板
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- 模板3 -->
+          <div class="min-w-[300px] md:min-w-[400px] snap-center">
+            <div class="bg-background rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-64 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=professional%20resume%20website%20template%20with%20formal%20layout%20and%20business%20style&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h3 class="text-2xl font-bold font-display text-white">专业正式</h3>
+                </div>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-600 mb-4">专业严谨的布局，适合商务和正式场合</p>
+                <button class="template-btn border-2 border-primary hover:bg-primary hover:text-white px-6 py-2 rounded-full font-semibold transition-all-300 btn-hover w-full" data-template="professional">
+                  选择模板
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- 模板4 -->
+          <div class="min-w-[300px] md:min-w-[400px] snap-center">
+            <div class="bg-background rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-64 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=portfolio%20focused%20resume%20website%20template%20with%20project%20showcase%20sections&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h3 class="text-2xl font-bold font-display text-white">作品集导向</h3>
+                </div>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-600 mb-4">突出展示你的项目作品，适合创意行业</p>
+                <button class="template-btn border-2 border-primary hover:bg-primary hover:text-white px-6 py-2 rounded-full font-semibold transition-all-300 btn-hover w-full" data-template="portfolio">
+                  选择模板
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- 模板5 -->
+          <div class="min-w-[300px] md:min-w-[400px] snap-center">
+            <div class="bg-background rounded-2xl border-2 border-gray-200 overflow-hidden card-hover">
+              <div class="h-64 bg-cover bg-center" style="background-image: url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=tech%20focused%20resume%20website%20template%20with%20skills%20section%20and%20code%20snippets&image_size=landscape_16_9')">
+                <div class="h-full bg-black bg-opacity-30 flex items-center justify-center">
+                  <h3 class="text-2xl font-bold font-display text-white">技术导向</h3>
+                </div>
+              </div>
+              <div class="p-6">
+                <p class="text-gray-600 mb-4">突出技术技能和项目经验，适合技术岗位</p>
+                <button class="template-btn border-2 border-primary hover:bg-primary hover:text-white px-6 py-2 rounded-full font-semibold transition-all-300 btn-hover w-full" data-template="tech">
+                  选择模板
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 滚动指示器 -->
+        <div class="flex justify-center mt-8 space-x-2">
+          <div class="w-3 h-3 rounded-full bg-primary"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300"></div>
+          <div class="w-3 h-3 rounded-full bg-gray-300"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 产品价值 -->
+  <section class="py-20 bg-background">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="scroll-reveal">
+          <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">为什么需要个人网站</span>
+          <h2 class="text-3xl md:text-4xl font-bold font-display mb-6">传统简历的时代已经结束</h2>
+          <p class="text-lg text-gray-600 mb-6">PDF简历是静态的、一维的，无法展示你的个性和专业能力。在竞争激烈的职场中，你需要一个能够脱颖而出的个人品牌。</p>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start">
+              <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1 flex-shrink-0">
+                <i class="fa fa-check"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-1">展示你的作品和项目</h3>
+                <p class="text-gray-600">通过作品集展示，让雇主直观了解你的专业能力</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1 flex-shrink-0">
+                <i class="fa fa-check"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-1">建立个人品牌</h3>
+                <p class="text-gray-600">专业的个人网站是你在数字世界的名片，提升个人影响力</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1 flex-shrink-0">
+                <i class="fa fa-check"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-1">提高求职竞争力</h3>
+                <p class="text-gray-600">在众多简历中脱颖而出，增加获得面试的机会</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold mr-3 mt-1 flex-shrink-0">
+                <i class="fa fa-check"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold mb-1">易于分享和更新</h3>
+                <p class="text-gray-600">一键分享链接，随时更新内容，保持信息新鲜</p>
+              </div>
+            </li>
+          </ul>
+          <button class="border-2 border-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full font-semibold transition-all-300 btn-hover">
+            了解更多
+          </button>
+        </div>
+        <div class="relative scroll-reveal">
+          <div class="absolute -top-4 -left-4 w-full h-full border-2 border-primary rounded-2xl"></div>
+          <div class="bg-white p-6 rounded-2xl border-2 border-gray-200 relative z-10">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <div class="text-xs text-gray-500">resume-site.com/zhangsan</div>
+            </div>
+            <div class="bg-primary text-white p-4 rounded-lg mb-4">
+              <h3 class="text-xl font-bold">张三</h3>
+              <p class="text-white/80">前端开发工程师</p>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center text-sm">
+                <i class="fa fa-briefcase text-primary mr-2"></i>
+                <span>5年工作经验</span>
+              </div>
+              <div class="flex items-center text-sm">
+                <i class="fa fa-graduation-cap text-primary mr-2"></i>
+                <span>北京大学计算机科学</span>
+              </div>
+              <div class="flex items-center text-sm">
+                <i class="fa fa-map-marker text-primary mr-2"></i>
+                <span>北京市朝阳区</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 产品工作流程 -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16 scroll-reveal">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">如何工作</span>
+        <h2 class="text-3xl md:text-4xl font-bold font-display mb-4">简单三步，创建专业个人网站</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">无需编码知识，只需上传你的简历，我们会为你生成一个美观、专业的个人网站。</p>
+      </div>
+      
+      <div class="relative">
+        <!-- 连接线 -->
+        <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-200 -translate-y-1/2 z-0"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+          <!-- 步骤1 -->
+          <div class="text-center scroll-reveal">
+            <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 relative">
+              <span>1</span>
+              <div class="absolute inset-0 border-2 border-primary rounded-full animate-ping opacity-75"></div>
+            </div>
+            <div class="bg-background p-6 rounded-2xl border-2 border-gray-200 card-hover">
+              <h3 class="text-xl font-semibold mb-3 font-display">上传简历</h3>
+              <p class="text-gray-600">支持PDF、Word文件上传，或直接粘贴文本内容。我们会自动提取关键信息。</p>
+            </div>
+          </div>
+          
+          <!-- 步骤2 -->
+          <div class="text-center scroll-reveal">
+            <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 relative">
+              <span>2</span>
+              <div class="absolute inset-0 border-2 border-primary rounded-full animate-ping opacity-75"></div>
+            </div>
+            <div class="bg-background p-6 rounded-2xl border-2 border-gray-200 card-hover">
+              <h3 class="text-xl font-semibold mb-3 font-display">选择模板</h3>
+              <p class="text-gray-600">从多种专业模板中选择适合你风格的设计，可自定义颜色和布局。</p>
+            </div>
+          </div>
+          
+          <!-- 步骤3 -->
+          <div class="text-center scroll-reveal">
+            <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-6 relative">
+              <span>3</span>
+              <div class="absolute inset-0 border-2 border-primary rounded-full animate-ping opacity-75"></div>
+            </div>
+            <div class="bg-background p-6 rounded-2xl border-2 border-gray-200 card-hover">
+              <h3 class="text-xl font-semibold mb-3 font-display">发布网站</h3>
+              <p class="text-gray-600">一键发布你的个人网站，获得专属链接，分享给潜在雇主或客户。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Before/After 对照 -->
+  <section id="demo" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16 scroll-reveal">
+        <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium mb-4">效果对比</span>
+        <h2 class="text-3xl md:text-4xl font-bold font-display mb-4">传统简历 vs 个人网站</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">看看我们如何将普通简历转化为专业的个人网站</p>
+      </div>
+      
+      <div class="flex flex-col md:flex-row gap-8 items-center scroll-reveal">
+        <!-- Before -->
+        <div class="md:w-1/2">
+          <div class="bg-background p-6 rounded-2xl border-2 border-gray-200 card-hover">
+            <div class="text-center mb-6">
+              <span class="inline-block bg-gray-200 text-gray-700 px-4 py-1 rounded-full text-sm font-medium">Before</span>
+              <h3 class="text-xl font-semibold mt-2 font-display">传统PDF简历</h3>
+            </div>
+            <div class="bg-white border-2 border-gray-200 rounded-lg p-4 shadow-sm">
+              <div class="text-center mb-4">
+                <h4 class="font-bold">张三</h4>
+                <p class="text-gray-600">前端开发工程师</p>
+              </div>
+              <div class="space-y-4 text-sm">
+                <div>
+                  <h5 class="font-semibold">联系方式</h5>
+                  <p>邮箱: zhangsan@example.com</p>
+                  <p>电话: 13800138000</p>
+                </div>
+                <div>
+                  <h5 class="font-semibold">工作经历</h5>
+                  <p>ABC科技有限公司 | 2020年至今</p>
+                  <p>前端开发工程师</p>
+                </div>
+                <div>
+                  <h5 class="font-semibold">教育背景</h5>
+                  <p>北京大学 | 2014年-2018年</p>
+                  <p>计算机科学与技术</p>
+                </div>
+                <div>
+                  <h5 class="font-semibold">技能</h5>
+                  <p>HTML5, CSS3, JavaScript, React, Vue</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 text-center">
+              <p class="text-gray-600 text-sm">静态、单调、缺乏互动性</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- After -->
+        <div class="md:w-1/2">
+          <div class="bg-background p-6 rounded-2xl border-2 border-primary card-hover">
+            <div class="text-center mb-6">
+              <span class="inline-block bg-primary/10 text-primary px-4 py-1 rounded-full text-sm font-medium">After</span>
+              <h3 class="text-xl font-semibold mt-2 font-display">专业个人网站</h3>
+            </div>
+            <div class="bg-white border-2 border-primary rounded-lg overflow-hidden shadow-md">
+              <header class="bg-primary text-white p-6">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                  <div>
+                    <h4 class="text-2xl font-bold">张三</h4>
+                    <p class="text-white/80">前端开发工程师</p>
+                  </div>
+                  <div class="mt-4 md:mt-0">
+                    <div class="flex space-x-3">
+                      <a href="#" class="bg-white/20 hover:bg-white/30 w-10 h-10 rounded-full flex items-center justify-center transition-all-300">
+                        <i class="fa fa-linkedin"></i>
+                      </a>
+                      <a href="#" class="bg-white/20 hover:bg-white/30 w-10 h-10 rounded-full flex items-center justify-center transition-all-300">
+                        <i class="fa fa-github"></i>
+                      </a>
+                      <a href="#" class="bg-white/20 hover:bg-white/30 w-10 h-10 rounded-full flex items-center justify-center transition-all-300">
+                        <i class="fa fa-twitter"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </header>
+              <div class="p-6 space-y-6">
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-user mr-2 text-primary"></i>
+                    关于我
+                  </h5>
+                  <p class="text-gray-600">我是一名有5年经验的前端开发工程师，专注于构建响应式、用户友好的网站和应用程序。我熟悉现代前端技术栈，包括HTML5、CSS3、JavaScript、React和Vue等。我热爱解决问题，并且不断学习新技术来提升自己的能力。</p>
+                </section>
+                
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-briefcase mr-2 text-primary"></i>
+                    工作经历
+                  </h5>
+                  <div class="mt-4 space-y-4">
+                    <div class="pl-4 border-l-2 border-primary">
+                      <div class="font-medium">前端开发工程师</div>
+                      <div class="text-gray-500">ABC科技有限公司 | 2020年至今</div>
+                      <ul class="list-disc list-inside mt-2 text-gray-600">
+                        <li>负责公司官网和内部系统的前端开发</li>
+                        <li>使用React和TypeScript构建单页应用</li>
+                        <li>优化网站性能，提升用户体验</li>
+                        <li>与后端团队协作，实现完整的功能模块</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+                
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-star mr-2 text-primary"></i>
+                    技能
+                  </h5>
+                  <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="flex justify-between mb-1">
+                        <span>HTML5/CSS3</span>
+                        <span>95%</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 95%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between mb-1">
+                        <span>JavaScript</span>
+                        <span>90%</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 90%"></div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                
+                <section>
+                  <h5 class="font-semibold text-lg border-b pb-2 flex items-center">
+                    <i class="fa fa-image mr-2 text-primary"></i>
+                    作品集
+                  </h5>
+                  <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div class="border rounded-lg overflow-hidden">
+                      <div class="h-24 bg-gray-200"></div>
+                      <div class="p-3">
+                        <div class="font-medium text-sm">个人博客系统</div>
+                        <div class="text-xs text-gray-500 mt-1">React + Node.js</div>
+                      </div>
+                    </div>
+                    <div class="border rounded-lg overflow-hidden">
+                      <div class="h-24 bg-gray-200"></div>
+                      <div class="p-3">
+                        <div class="font-medium text-sm">电商网站</div>
+                        <div class="text-xs text-gray-500 mt-1">Vue + Express</div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+            <div class="mt-6 text-center">
+              <p class="text-gray-600 text-sm">动态、专业、互动性强、易于分享</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA 区域 -->
+  <section class="py-20 bg-primary text-white">
+    <div class="container mx-auto px-4 text-center scroll-reveal">
+      <h2 class="text-3xl md:text-4xl font-bold font-display mb-6">准备好创建你的个人网站了吗？</h2>
+      <p class="text-lg mb-8 max-w-2xl mx-auto">只需上传你的简历，我们会为你生成一个专业的个人网站，展示你的技能和经历。</p>
+      <button class="bg-white text-primary hover:bg-gray-100 px-10 py-4 rounded-full font-semibold text-lg transition-all-300 btn-hover border-2 border-white hover:bg-transparent hover:text-white">
+        立即开始
+      </button>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="bg-background py-12 border-t border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+        <div class="flex items-center space-x-2 mb-4 md:mb-0">
+          <div class="w-8 h-8 border-2 border-primary rounded-full flex items-center justify-center">
+            <i class="fa fa-file-text-o text-primary"></i>
+          </div>
+          <h2 class="text-xl font-bold font-display">ResumeSite</h2>
+        </div>
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-600 hover:text-primary transition-all-300">
+            <i class="fa fa-twitter text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-primary transition-all-300">
+            <i class="fa fa-linkedin text-xl"></i>
+          </a>
+          <a href="#" class="text-gray-600 hover:text-primary transition-all-300">
+            <i class="fa fa-github text-xl"></i>
+          </a>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="font-semibold mb-4 font-display">产品</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">功能</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">模板</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">定价</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">演示</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-4 font-display">资源</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">博客</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">帮助中心</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">教程</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">常见问题</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-4 font-display">公司</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">关于我们</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">团队</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">联系我们</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">加入我们</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold mb-4 font-display">法律</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">隐私政策</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">服务条款</a></li>
+            <li><a href="#" class="text-gray-600 hover:text-primary transition-all-300">Cookie 政策</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-200 pt-8 text-center text-gray-600">
+        <p>&copy; 2026 ResumeSite. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 登录模态框 -->
+  <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold font-display">登录</h3>
+        <button id="close-login" class="text-gray-500 hover:text-primary text-xl">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <form class="space-y-4">
+        <div>
+          <label class="block text-gray-700 mb-2">邮箱</label>
+          <input type="email" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2 form-input-focus" placeholder="请输入你的邮箱">
+        </div>
+        <div>
+          <label class="block text-gray-700 mb-2">密码</label>
+          <input type="password" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2 form-input-focus" placeholder="请输入你的密码">
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input type="checkbox" id="remember" class="mr-2">
+            <label for="remember" class="text-gray-700">记住我</label>
+          </div>
+          <a href="#" class="text-primary hover:underline">忘记密码？</a>
+        </div>
+        <button type="submit" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-semibold transition-all-300 btn-hover">登录</button>
+        <div class="text-center">
+          <p class="text-gray-700">还没有账号？ <a href="#" id="go-to-register" class="text-primary hover:underline">立即注册</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 注册模态框 -->
+  <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold font-display">注册</h3>
+        <button id="close-register" class="text-gray-500 hover:text-primary text-xl">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <form class="space-y-4">
+        <div>
+          <label class="block text-gray-700 mb-2">姓名</label>
+          <input type="text" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2 form-input-focus" placeholder="请输入你的姓名">
+        </div>
+        <div>
+          <label class="block text-gray-700 mb-2">邮箱</label>
+          <input type="email" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2 form-input-focus" placeholder="请输入你的邮箱">
+        </div>
+        <div>
+          <label class="block text-gray-700 mb-2">密码</label>
+          <input type="password" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2 form-input-focus" placeholder="请输入你的密码">
+        </div>
+        <div>
+          <label class="block text-gray-700 mb-2">确认密码</label>
+          <input type="password" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2 form-input-focus" placeholder="请再次输入你的密码">
+        </div>
+        <button type="submit" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-semibold transition-all-300 btn-hover">注册</button>
+        <div class="text-center">
+          <p class="text-gray-700">已有账号？ <a href="#" id="go-to-login" class="text-primary hover:underline">立即登录</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // DOM元素
+    const loginBtn = document.getElementById('login-btn');
+    const getStartedBtn = document.getElementById('get-started-btn');
+    const loginModal = document.getElementById('login-modal');
+    const registerModal = document.getElementById('register-modal');
+    const closeLogin = document.getElementById('close-login');
+    const closeRegister = document.getElementById('close-register');
+    const goToRegister = document.getElementById('go-to-register');
+    const goToLogin = document.getElementById('go-to-login');
+    const uploadSection = document.getElementById('upload-section');
+    const fileUpload = document.getElementById('file-upload');
+    const dynamicText = document.getElementById('dynamic-text');
+
+    // 动态字幕
+    const keywords = ['Resume', 'Portfolio', 'Personal Site', 'Digital Presence'];
+    let currentIndex = 0;
+    
+    function changeKeyword() {
+      dynamicText.style.opacity = '0';
+      dynamicText.style.transform = 'translateY(10px)';
+      
+      setTimeout(() => {
+        dynamicText.textContent = keywords[currentIndex];
+        currentIndex = (currentIndex + 1) % keywords.length;
+        dynamicText.style.opacity = '1';
+        dynamicText.style.transform = 'translateY(0)';
+      }, 300);
+    }
+    
+    setInterval(changeKeyword, 1500);
+
+    // 滚动动画
+    const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+    
+    function checkScroll() {
+      scrollRevealElements.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        if (elementTop < window.innerHeight - elementVisible) {
+          element.classList.add('revealed');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', checkScroll);
+    checkScroll(); // 初始检查
+
+    // 登录按钮点击事件
+    loginBtn.addEventListener('click', () => {
+      loginModal.classList.remove('hidden');
+      setTimeout(() => {
+        loginModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+        loginModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+      }, 10);
+    });
+
+    // 关闭登录模态框
+    closeLogin.addEventListener('click', () => {
+      loginModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        loginModal.classList.add('hidden');
+      }, 300);
+    });
+
+    // 关闭注册模态框
+    closeRegister.addEventListener('click', () => {
+      registerModal.querySelector('div').classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        registerModal.classList.add('hidden');
+      }, 300);
+    });
+
+    // 点击模态框外部关闭
+    window.addEventListener('click', (e) => {
+      if (e.target === loginModal) {
+        closeLogin.click();
+      }
+      if (e.target === registerModal) {
+        closeRegister.click();
+      }
+    });
+
+    // 开始使用按钮点击事件
+    getStartedBtn.addEventListener('click', () => {
+      // 滚动到上传区域
+      document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // 导航栏登录按钮点击事件
+    loginBtn.addEventListener('click', () => {
+      // 滚动到上传区域
+      document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+      alert('无需登录即可使用！');
+    });
+
+    // 注册链接点击
+    goToRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeLogin.click();
+      setTimeout(() => {
+        registerModal.classList.remove('hidden');
+        setTimeout(() => {
+          registerModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+          registerModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+        }, 10);
+      }, 400);
+    });
+
+    // 登录链接点击
+    goToLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeRegister.click();
+      setTimeout(() => {
+        loginModal.classList.remove('hidden');
+        setTimeout(() => {
+          loginModal.querySelector('div').classList.add('scale-100', 'opacity-100');
+          loginModal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+        }, 10);
+      }, 400);
+    });
+
+    // 登录表单提交
+    document.querySelector('#login-modal form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const email = document.querySelector('#login-modal input[type="email"]').value;
+      const password = document.querySelector('#login-modal input[type="password"]').value;
+      
+      // 简单验证
+      if (!email || !password) {
+        alert('请填写所有必填字段');
+        return;
+      }
+      
+      // 模拟登录成功
+      closeLogin.click();
+      // 滚动到上传区域
+      document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+      alert('登录成功！');
+    });
+
+    // 注册表单提交
+    document.querySelector('#register-modal form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.querySelector('#register-modal input[type="text"]').value;
+      const email = document.querySelector('#register-modal input[type="email"]').value;
+      const password = document.querySelector('#register-modal input[type="password"]:nth-of-type(1)').value;
+      const confirmPassword = document.querySelector('#register-modal input[type="password"]:nth-of-type(2)').value;
+      
+      // 简单验证
+      if (!name || !email || !password || !confirmPassword) {
+        alert('请填写所有必填字段');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        alert('两次输入的密码不一致');
+        return;
+      }
+      
+      // 模拟注册成功
+      closeRegister.click();
+      // 滚动到上传区域
+      document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+      alert('注册成功！');
+    });
+
+    // 上传方式切换
+    const uploadBtns = document.querySelectorAll('.upload-btn');
+    const uploadMethods = document.querySelectorAll('.upload-method');
+    
+    uploadBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const method = btn.getAttribute('data-method');
+        
+        // 移除所有按钮的活动状态
+        uploadBtns.forEach(b => b.classList.remove('active', 'bg-background', 'border-primary', 'text-primary'));
+        uploadBtns.forEach(b => b.classList.add('bg-white', 'border-gray-200'));
+        
+        // 添加当前按钮的活动状态
+        btn.classList.add('active', 'bg-background', 'border-primary', 'text-primary');
+        btn.classList.remove('bg-white', 'border-gray-200');
+        
+        // 隐藏所有上传方式
+        uploadMethods.forEach(method => method.classList.add('hidden'));
+        
+        // 显示当前上传方式
+        document.getElementById(`${method}-upload`).classList.remove('hidden');
+      });
+    });
+
+    // 步骤切换函数
+    function showStep(stepNumber) {
+      // 隐藏所有步骤
+      document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+      
+      // 显示当前步骤
+      document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+      
+      // 更新进度条
+      for (let i = 1; i <= 3; i++) {
+        if (i < stepNumber) {
+          document.getElementById(`progress-${i}`).style.width = '100%';
+        } else if (i === stepNumber) {
+          document.getElementById(`progress-${i}`).style.width = '50%';
+        } else {
+          document.getElementById(`progress-${i}`).style.width = '0%';
+        }
+      }
+      
+      // 更新步骤指示器
+      for (let i = 1; i <= 4; i++) {
+        const stepIndicator = document.querySelector(`.flex-col:nth-child(${i * 2 - 1}) .w-12`);
+        if (i < stepNumber) {
+          stepIndicator.classList.remove('bg-gray-200');
+          stepIndicator.classList.add('bg-green-500');
+        } else if (i === stepNumber) {
+          stepIndicator.classList.remove('bg-gray-200', 'bg-green-500');
+          stepIndicator.classList.add('bg-primary');
+        } else {
+          stepIndicator.classList.remove('bg-primary', 'bg-green-500');
+          stepIndicator.classList.add('bg-gray-200');
+        }
+      }
+    }
+
+    // 拖拽上传
+    const fileInput = document.getElementById('file-input');
+    
+    if (uploadSection && fileInput) {
+      uploadSection.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadSection.classList.add('border-primary');
+      });
+      
+      uploadSection.addEventListener('dragleave', () => {
+        uploadSection.classList.remove('border-primary');
+      });
+      
+      uploadSection.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadSection.classList.remove('border-primary');
+        if (e.dataTransfer.files.length) {
+          handleFileUpload(e.dataTransfer.files);
+        }
+      });
+      
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+          handleFileUpload(e.target.files);
+        }
+      });
+    }
+
+    // 文本上传
+    const textUploadBtn = document.getElementById('text-upload-btn');
+    if (textUploadBtn) {
+      textUploadBtn.addEventListener('click', () => {
+        const text = document.getElementById('resume-text').value;
+        if (!text.trim()) {
+          alert('请输入简历文本');
+          return;
+        }
+        
+        // 显示上传进度
+        const textUpload = document.getElementById('text-upload');
+        textUpload.innerHTML = `
+          <div class="w-20 h-20 border-2 border-primary rounded-full flex items-center justify-center text-primary text-4xl mb-6 mx-auto">
+            <i class="fa fa-spinner fa-spin"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-4 font-display">正在解析文本...</h3>
+          <p class="text-gray-600 mb-6">正在提取简历内容，请稍候...</p>
+          <div class="w-full bg-gray-200 rounded-full h-4 mb-6">
+            <div class="bg-primary h-4 rounded-full" style="width: 0%"></div>
+          </div>
+          <p class="text-sm text-gray-500">正在分析文本结构...</p>
+        `;
+        
+        // 模拟进度
+        const progressBar = textUpload.querySelector('.bg-primary');
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 10;
+          progressBar.style.width = `${progress}%`;
+          if (progress >= 100) {
+            clearInterval(interval);
+            
+            // 模拟解析完成
+            setTimeout(() => {
+              showStep(2);
+            }, 1000);
+          }
+        }, 300);
+      });
+    }
+
+    function handleFileUpload(files) {
+      const file = files[0];
+      if (!file.name.match(/\.(pdf|doc|docx)$/i)) {
+        alert('请上传PDF或Word文件');
+        return;
+      }
+      
+      // 显示上传进度
+      uploadSection.innerHTML = `
+        <div class="w-20 h-20 border-2 border-primary rounded-full flex items-center justify-center text-primary text-4xl mb-6 mx-auto">
+          <i class="fa fa-spinner fa-spin"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-4 font-display">正在解析文件...</h3>
+        <p class="text-gray-600 mb-6">${file.name}</p>
+        <div class="w-full bg-gray-200 rounded-full h-4 mb-6">
+          <div class="bg-primary h-4 rounded-full" style="width: 0%"></div>
+        </div>
+        <p class="text-sm text-gray-500">正在提取简历内容，请稍候...</p>
+      `;
+      
+      // 模拟进度
+      const progressBar = uploadSection.querySelector('.bg-primary');
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = `${progress}%`;
+        if (progress >= 100) {
+          clearInterval(interval);
+          
+          // 模拟解析完成
+          setTimeout(() => {
+            showStep(2);
+          }, 1000);
+        }
+      }, 300);
+    }
+
+    // 步骤导航事件
+    const backToUpload = document.getElementById('back-to-upload');
+    const parseNext = document.getElementById('parse-next');
+    const backToParse = document.getElementById('back-to-parse');
+    const templateNext = document.getElementById('template-next');
+    const backToTemplate = document.getElementById('back-to-template');
+    const deployBtn = document.getElementById('deploy-btn');
+
+    if (backToUpload) {
+      backToUpload.addEventListener('click', () => {
+        showStep(1);
+      });
+    }
+
+    if (parseNext) {
+      parseNext.addEventListener('click', () => {
+        showStep(3);
+      });
+    }
+
+    if (backToParse) {
+      backToParse.addEventListener('click', () => {
+        showStep(2);
+      });
+    }
+
+    if (templateNext) {
+      templateNext.addEventListener('click', () => {
+        showStep(4);
+      });
+    }
+
+    if (backToTemplate) {
+      backToTemplate.addEventListener('click', () => {
+        showStep(3);
+      });
+    }
+
+    // 模板选择
+    const templateSelectBtns = document.querySelectorAll('.template-select-btn');
+    templateSelectBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // 移除所有模板的选中状态
+        templateSelectBtns.forEach(b => {
+          b.classList.remove('bg-primary', 'text-white');
+          b.classList.add('border-primary', 'hover:bg-primary', 'hover:text-white');
+        });
+        
+        // 添加当前模板的选中状态
+        btn.classList.remove('border-primary', 'hover:bg-primary', 'hover:text-white');
+        btn.classList.add('bg-primary', 'text-white');
+      });
+    });
+
+    // 部署网站
+    if (deployBtn) {
+      deployBtn.addEventListener('click', () => {
+        alert('网站部署成功！你的个人网站已经上线，可以通过以下链接访问：\nhttps://resume-site.com/zhangsan');
+      });
+    }
+
+    // 模板选择按钮点击事件（原有模板区域）
+    function bindTemplateButtons() {
+      const templateBtns = document.querySelectorAll('.template-btn');
+      templateBtns.forEach(btn => {
+        // 移除旧的事件监听器
+        btn.removeEventListener('click', templateClickHandler);
+        // 添加新的事件监听器
+        btn.addEventListener('click', templateClickHandler);
+      });
+    }
+
+    function templateClickHandler(e) {
+      e.preventDefault();
+      const template = this.getAttribute('data-template');
+      // 跳转到上传区域
+      document.getElementById('upload-section').scrollIntoView({ behavior: 'smooth' });
+      alert(`已选择 ${template} 模板！`);
+    }
+
+    // 页面加载完成后绑定模板按钮
+    window.addEventListener('load', bindTemplateButtons);
+    // 页面滚动时重新绑定（确保动态加载的元素也能被绑定）
+    window.addEventListener('scroll', bindTemplateButtons);
+    // 立即绑定一次
+    bindTemplateButtons();
+  </script>
+
+  <style>
+    /* 模态框动画 */
+    #login-modal > div,
+    #register-modal > div {
+      transition: all 0.3s ease;
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    #login-modal > div.scale-100,
+    #register-modal > div.scale-100 {
+      transform: scale(1);
+      opacity: 1;
+    }
+  </style>
+</body>
+</html>
